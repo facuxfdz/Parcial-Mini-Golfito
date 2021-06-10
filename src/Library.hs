@@ -112,3 +112,18 @@ cuantosObstaculosConsecutivosSupera obstaculos tiro = length (filter (`puedeSupe
 paloMasUtil :: Jugador -> [Obstaculo] -> Palo
 paloMasUtil jugador obstaculos 
     = maximoSegun (cuantosObstaculosConsecutivosSupera obstaculos . flip golpe jugador) palos
+
+jugadorDeTorneo = fst
+puntosGanados = snd
+
+pierdenLaApuesta :: [(Jugador,Puntos)] -> [String]
+pierdenLaApuesta puntosDeTorneo
+  = 
+    (map (padre . jugadorDeTorneo) . filter (not . gano puntosDeTorneo)) 
+    puntosDeTorneo
+
+gano :: [(Jugador,Puntos)] -> (Jugador,Puntos) -> Bool 
+gano puntosDeTorneo puntosDeUnJugador
+  = 
+    (all ((< puntosGanados puntosDeUnJugador).puntosGanados) 
+  . filter (/= puntosDeUnJugador)) puntosDeTorneo
