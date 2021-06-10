@@ -29,7 +29,10 @@ type Puntos = Number
 -- Funciones útiles
 between n m x = x `elem` [n .. m]
 
+maximoSegun :: Ord b => (a->b) -> [a] -> a
 maximoSegun f = foldl1 (mayorSegun f)
+
+mayorSegun :: Ord x => (t->x) -> (t->t->t)
 mayorSegun f a b
   | f a > f b = a
   | otherwise = b
@@ -95,3 +98,17 @@ efectoHoyo = (...)
 
 tiroDetenido :: Tiro
 tiroDetenido = UnTiro 0 0 0
+
+--PUNTO 4) a)
+palosUtiles :: Jugador -> Obstaculo -> [Palo]
+palosUtiles jugador obstaculo = filter (esUtil jugador obstaculo) palos
+
+esUtil :: Jugador -> Obstaculo -> Palo -> Bool 
+esUtil jugador obstaculo palo = puedeSuperar obstaculo (palo (habilidad jugador))
+
+cuantosObstaculosConsecutivosSupera :: [Obstaculo] -> Tiro -> Number
+cuantosObstaculosConsecutivosSupera obstaculos tiro = length (filter (`puedeSuperar` tiro) obstaculos)
+
+paloMasUtil :: Jugador -> [Obstaculo] -> Palo
+paloMasUtil jugador obstaculos 
+    = maximoSegun (cuantosObstaculosConsecutivosSupera obstaculos . flip golpe jugador) palos
